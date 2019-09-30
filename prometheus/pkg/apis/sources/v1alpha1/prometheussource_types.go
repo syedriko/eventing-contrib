@@ -55,7 +55,11 @@ const (
 
 // PrometheusSourceSpec defines the desired state of PrometheusSource
 type PrometheusSourceSpec struct {
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
+	// ServerURL is the URL of the Prometheus server
+	ServerURL string `json:"serverURL"`
+
+	// PromQL is the Prometheus query for this source
+	PromQL string `json:"promQL"`
 
 	// Sink is a reference to an object that will resolve to a domain
 	// name to use as the sink.
