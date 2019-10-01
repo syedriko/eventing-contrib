@@ -22,5 +22,5 @@ import (
 )
 
 func main() {
-	sharedmain.Main("prometheus-controller", reconciler.NewController)
+	sharedmain.Main("prometheus_controller", reconciler.NewController)
 }

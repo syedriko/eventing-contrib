@@ -57,19 +57,19 @@ spec:
         kind:
           type: string
         metadata:
-          type: object	
+          type: object
         spec:
           properties:
             serverURL:
               type: string
             promQL:
               type: string
-	    sink:
+          sink:
               type: object
-	  requried:
-	  - serverURL
-	  - promQL
-	  - sink
+          requried:
+          - serverURL
+          - promQL
+          - sink
         status:
           properties:
             conditions:
