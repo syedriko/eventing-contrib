@@ -95,5 +95,14 @@ func makeEnv(eventSource, sinkURI string, spec *v1alpha1.PrometheusSourceSpec) [
 				FieldPath: "metadata.namespace",
 			},
 		},
+	}, {
+		Name:  "METRICS_DOMAIN",
+		Value: "knative.dev/eventing",
+	}, {
+		Name:  "K_METRICS_CONFIG",
+		Value: "",
+	}, {
+		Name:  "K_LOGGING_CONFIG",
+		Value: "",
 	}}
 }
