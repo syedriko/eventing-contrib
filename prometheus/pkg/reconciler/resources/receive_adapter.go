@@ -67,6 +67,24 @@ func MakeReceiveAdapter(args *ReceiveAdapterArgs) *v1.Deployment {
 							Name:  "receive-adapter",
 							Image: args.Image,
 							Env:   makeEnv(args.EventSource, args.SinkURI, &args.Source.Spec),
+							VolumeMounts: []corev1.VolumeMount{
+								{
+									Name: "openshift-service-serving-signer-cabundle",
+									MountPath: "/etc/openshift-service-serving-signer-cabundle/",
+								},
+							},
+						},
+					},
+					Volumes: []corev1.Volume{
+						{
+							Name: "openshift-service-serving-signer-cabundle",
+							VolumeSource: corev1.VolumeSource{
+								ConfigMap: &corev1.ConfigMapVolumeSource{
+									LocalObjectReference: corev1.LocalObjectReference{
+										Name: "openshift-service-serving-signer-cabundle",
+									},
+								},
+							},
 						},
 					},
 				},

@@ -19,6 +19,8 @@ package adapter
 import (
 	"context"
 	"io/ioutil"
+	"crypto/tls"
+	"crypto/x509"
 	"net/http"
 	"time"
 
@@ -36,6 +38,8 @@ import (
 
 const (
 	apiChunkOfURL = `/api/v1/query?query=`
+	authTokenFile = `/var/run/secrets/kubernetes.io/serviceaccount/token`
+	caCertFile = `/etc/openshift-service-serving-signer-cabundle/service-ca.crt`
 )
 
 type envConfig struct {
@@ -92,9 +96,34 @@ func (a *prometheusAdapter) send() {
 		return
 	}
 
+	content, err := ioutil.ReadFile(authTokenFile)
+	if err != nil {
+		a.logger.Error("Error reading token", zap.Error(err))
+		return
+	}
+	req.Header.Set("Authorization", "Bearer " + string(content))
+
 	a.logger.Info(req)
 
-	client := &http.Client{}
+	caCert, err := ioutil.ReadFile(caCertFile)
+	if err != nil {
+		a.logger.Error("Error reading CA cert", zap.Error(err))
+		return
+	}
+
+	caCertPool := x509.NewCertPool()
+	if !caCertPool.AppendCertsFromPEM(caCert) {
+		a.logger.Error("Error parsing CA cert")
+		return
+	}
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				RootCAs: caCertPool,
+			},
+		},
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		a.logger.Error("HTTP invocation error", zap.Error(err))

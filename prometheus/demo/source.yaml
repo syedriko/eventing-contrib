@@ -3,7 +3,7 @@ kind: PrometheusSource
 metadata:
   name: prometheus-source
 spec:
-  serverURL: http://demo.robustperception.io:9090
+  serverURL: https://prometheus-k8s.openshift-monitoring.svc:9091
   promQL: ALERTS
   sink:
     apiVersion: serving.knative.dev/v1
